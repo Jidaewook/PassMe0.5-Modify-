@@ -1,4 +1,5 @@
 const ncsModel = require('../model/ncs');
+const userModel = require('../model/user');
 
 exports.ncs_post = (req, res) => {
     const ncsFields = {};
@@ -9,6 +10,7 @@ exports.ncs_post = (req, res) => {
     if (req.file.path) ncsFields.thumbnail = req.file.path;
     if (req.body.comments) ncsFields.comments = req.body.comments;
     if (req.body.likes) ncsFields.likes = req.body.lieks;
+    if (req.body.backimage) ncsFields.backimage = req.body.backimage;
     if (req.body.attached) ncsFields.attached = req.body.attached;
     if (typeof req.body.tag !== 'undefined') {
         ncsFields.tag = req.body.tag.split(',')
@@ -110,4 +112,62 @@ exports.ncs_patch = (req, res) => {
             })
         });
 
+};
+
+exports.ncs_like = (req, res) => {
+    userModel
+        .findOne({user: req.user._id})
+        .then(user => {
+            ncsModel
+                .findById(req.params.ncsModelId)
+                .then(post => {
+                    if(post.likes.filter(like => like.user.toString() === req.user._id).length > 0){
+                        return res.status(400).json({ alreadyliked: 'user already liked this post'});
+                    }
+                    post.likes.unshift({user: req.user._id});
+                    post
+                        .save()
+                        .then(
+                            post => res.json(post)
+                        );
+                })
+                .catch(err => res.status(400).json({
+                    msg: err.message
+                }));
+        })
+        .catch(
+            err => res.status(400).json({
+                msg: err.message
+            })
+        );
+};
+
+exports.ncs_unlike = (req, res) => {
+    userModel
+        .findOne({user: req.user._id})
+        .then(user => {
+            ncsModel
+                .findById()
+                .then(post => {
+                    if(post.likes.filter(like => like.user.toString() === req.user._id).length === 0) {
+                        return res.status(400).json({
+                            notliked: 'You have not liked this post'
+                        })
+                    }
+                    const removeIndex = post
+                        .likes
+                        .map(item => item.user.toString())
+                        .indexOf(req.user._id);
+                    post.likes.splice(removeIndex, 1);
+                    post    
+                        .save()
+                        .then(post => res.json(post));
+                })
+                .catch(err =>
+                    res.status(500).json({
+                        err: err.message
+                    })
+                )
+        });
+        
 };

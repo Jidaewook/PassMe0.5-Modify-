@@ -7,6 +7,7 @@ exports.notice_post = (req, res) => {
     if(req.body.desc) noticeFields.desc = req.body.desc;
     if(req.body.url) noticeFields.url = req.body.url;
     if(req.file.path) noticeFields.thumbnail = req.file.path;
+    if(req.file.path) noticeFields.backimage = req.file.path;
   
     const newNotice = new noticeModel(noticeFields);
     newNotice
@@ -81,11 +82,12 @@ exports.notice_patch = (req, res) => {
     if(req.body.desc) noticeFields.desc = req.body.desc;
     if(req.body.url) noticeFields.url = req.body.url;
     if(req.file.path) noticeFields.thumbnail = req.file.path;
+    if(req.file.path) noticeFields.backimage = req.file.path;
 
     noticeModel
         .findOneAndUpdate(
             { _id: req.params.noticeModelId },
-            { $set: { title, desc, url, thumbnail } },
+            { $set: { title, desc, url, thumbnail, backimage } },
             { new: true }
         )
         .then(notice => {

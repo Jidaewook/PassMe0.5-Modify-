@@ -18,6 +18,9 @@ const noticeSchema = new mongoose.Schema(
         },
         thumbnail: {
             type: String
+        },
+        backimage: {
+            type: String
         }
     }, 
     {

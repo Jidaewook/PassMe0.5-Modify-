@@ -22,6 +22,9 @@ const psatSchema = new mongoose.Schema(
         attached: {
             type: String
         },
+        backimage: {
+            type: String
+        },
         comments: [
             {
                 user: {

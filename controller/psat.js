@@ -10,6 +10,7 @@ exports.psat_post = (req, res) => {
     if (req.body.url) psatFields.url = req.body.url;
     if (req.body.comments) psatFields.comments = req.body.comments;
     if (req.body.likes) psatFields.likes = req.body.likes;
+    if (req.file.path) psatFields.backimage = req.file.path;
     if (req.file.path) psatFields.thumbnail = req.file.path;
     if (req.body.attached) psatFields.attached = req.body.attached;
     if (typeof req.body.tag !== 'undefined') {
@@ -90,12 +91,12 @@ exports.psat_del = (req, res) => {
 
 exports.psat_patch = (req, res) => {
    
-    const { title, desc, url, thumbnail, attached } = req.body;
+    const { title, desc, url, thumbnail, attached, backimage } = req.body;
 
     psatModel
         .findOneAndUpdate(
             { _id: req.params.psatModelId },
-            { $set: { title, desc, url, thumbnail, attached } },
+            { $set: { title, desc, url, thumbnail, attached, backimage } },
             { new: true }
         )
         .then(psat => {
