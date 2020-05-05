@@ -8,6 +8,8 @@ exports.psat_post = (req, res) => {
     if (req.body.title) psatFields.title = req.body.title;
     if (req.body.desc) psatFields.desc = req.body.desc;
     if (req.body.url) psatFields.url = req.body.url;
+    if (req.body.comments) psatFields.comments = req.body.comments;
+    if (req.body.likes) psatFields.likes = req.body.likes;
     if (req.file.path) psatFields.thumbnail = req.file.path;
     if (req.body.attached) psatFields.attached = req.body.attached;
     if (typeof req.body.tag !== 'undefined') {
@@ -20,7 +22,7 @@ exports.psat_post = (req, res) => {
         .then(item => {
             res.status(200).json({
                 message: 'Successful Psat',
-                psatInfo: item
+                results: item
             })
         })
         .catch(err => {
@@ -53,7 +55,7 @@ exports.psat_detailget = (req, res) => {
         .then(item => {
             res.status(200).json({
                 message: 'Successful Get PSAT Detail',
-                psatInfo: item
+                results: item
             })
         })
         .catch(err => {

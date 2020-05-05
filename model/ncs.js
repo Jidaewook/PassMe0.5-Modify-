@@ -21,6 +21,39 @@ const ncsSchema  = new mongoose.Schema(
         attached: {
             type: String
         },
+        comments: [
+            {
+                user: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'users'
+                },
+                desc: {
+                    type: String,
+                    require: true
+                },
+                like: [
+                    {
+                        user: {
+                            type: mongoose.Schema.Types.ObjectId,
+                            ref: 'users'
+                        }
+                    }
+                ],
+                date: {
+                    type: Date,
+                    default: Date.now()
+                }
+            }
+            
+        ],
+        likes: [
+            {
+                user: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'users'
+                }
+            }
+        ],
         
         tag: [
             {

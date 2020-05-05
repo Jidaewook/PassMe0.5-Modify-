@@ -7,6 +7,8 @@ exports.ncs_post = (req, res) => {
     if (req.body.desc) ncsFields.desc = req.body.desc;
     if (req.body.url) ncsFields.url = req.body.url;
     if (req.file.path) ncsFields.thumbnail = req.file.path;
+    if (req.body.comments) ncsFields.comments = req.body.comments;
+    if (req.body.likes) ncsFields.likes = req.body.lieks;
     if (req.body.attached) ncsFields.attached = req.body.attached;
     if (typeof req.body.tag !== 'undefined') {
         ncsFields.tag = req.body.tag.split(',')
@@ -18,7 +20,7 @@ exports.ncs_post = (req, res) => {
         .then(item => {
             res.status(200).json({
                 message: 'Successful Ncs',
-                ncsInfo: item
+                results: item
 
             });
         })
@@ -53,7 +55,7 @@ exports.ncs_detailget = (req, res) => {
         .then(item => {
             res.status(200).json({
                 message: 'Successful Get NCS Detail',
-                ncsInfo: item
+                results: item
             })
         })
         .catch(err => {

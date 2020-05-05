@@ -32,7 +32,7 @@ exports.notice_get = (req, res) => {
             res.status(200).json({
                 message: 'Successful Get Notice',
                 count: notices.length,
-                noticeInfo: notices
+                results: notices
             })
         })
         .catch(err => {
@@ -48,7 +48,7 @@ exports.notice_detailget = (req, res) => {
         .then(detail => {
             res.status(200).json({
                 message: 'Successful Get Notice Detail',
-                noticeInfo: detail
+                results: detail
             })
         })
         .catch(err => {
