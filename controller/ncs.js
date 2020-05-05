@@ -36,7 +36,8 @@ exports.ncs_get = (req, res) => {
             res.status(200).json({
                 message: 'Successful Get NCS',
                 count: items.length,
-                ncsInfo: items
+                // results로 프론트/api에서 출력 항목을 설정했으면, 아래 불러올 항목의 이름이 일치해야 한다.
+                results: items
             })
         })
         .catch(err => {

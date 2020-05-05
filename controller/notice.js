@@ -6,6 +6,7 @@ exports.notice_post = (req, res) => {
     if(req.body.title) noticeFields.title = req.body.title;
     if(req.body.desc) noticeFields.desc = req.body.desc;
     if(req.body.url) noticeFields.url = req.body.url;
+    if(req.file.path) noticeFields.thumbnail = req.file.path;
   
     const newNotice = new noticeModel(noticeFields);
     newNotice
@@ -75,8 +76,11 @@ exports.notice_del = (req, res) => {
 };
 
 exports.notice_patch = (req, res) => {
-   
-    const { title, desc, url, thumbnail } = req.body;
+
+    if(req.body.title) noticeFields.title = req.body.title;
+    if(req.body.desc) noticeFields.desc = req.body.desc;
+    if(req.body.url) noticeFields.url = req.body.url;
+    if(req.file.path) noticeFields.thumbnail = req.file.path;
 
     noticeModel
         .findOneAndUpdate(
