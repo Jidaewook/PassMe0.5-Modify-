@@ -115,13 +115,15 @@ exports.ncs_patch = (req, res) => {
 };
 
 exports.ncs_like = (req, res) => {
+    console.log(req.user);
     userModel
-        .findOne({user: req.user._id})
+        // findOneㅇㅣ 아니라 findById 로 해야 함.
+        .findById(req.user.id)
         .then(user => {
             ncsModel
                 .findById(req.params.ncsModelId)
                 .then(post => {
-                    if(post.likes.filter(like => like.user.toString() === req.user._id).length > 0){
+                    if(post.likes.filter(like => like.user.toString() === req.user.id).length > 0){
                         return res.status(400).json({ alreadyliked: 'user already liked this post'});
                     }
                     post.likes.unshift({user: req.user._id});
@@ -144,12 +146,12 @@ exports.ncs_like = (req, res) => {
 
 exports.ncs_unlike = (req, res) => {
     userModel
-        .findOne({user: req.user._id})
+        .findById(req.user.id)
         .then(user => {
             ncsModel
-                .findById()
+                .findById(req.params.ncsModelId)
                 .then(post => {
-                    if(post.likes.filter(like => like.user.toString() === req.user._id).length === 0) {
+                    if(post.likes.filter(like => like.user.toString() === req.user.id).length === 0) {
                         return res.status(400).json({
                             notliked: 'You have not liked this post'
                         })
@@ -170,4 +172,26 @@ exports.ncs_unlike = (req, res) => {
                 )
         });
         
+};
+
+// 아직 댓글 미완성
+exports.ncs_comments = (req, res) => {
+    ncsModel    
+        .findById(req.params.id)
+        .then(post => {
+            const newComment = {
+                text: req.body.text,
+                name: req.body.name,
+                avatar: req.body.avatar,
+                user: req.user.id
+            };
+
+            post.comments.unshift(newComment);
+
+            post.save()
+                .then(post => res.json(post));
+        })
+        .catch(err => 
+            res.json(err)
+        );
 };
