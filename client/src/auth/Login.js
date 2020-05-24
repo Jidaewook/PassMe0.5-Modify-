@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+import axios from 'axios';
 
 export default class Login extends Component {
 
@@ -23,11 +23,15 @@ export default class Login extends Component {
     onSubmit(e) {
         e.preventDefault();
 
-        const user = {
+        const userInfo = {
             email: this.state.email,
             password: this.state.password
         };
-        console.log("user:", user);
+
+        axios
+            .post("http://localhost:7000/users/login", userInfo)
+            .then(res => console.log(res.data))
+            .catch(err => console.log(err.response.data));
     };
 
 
@@ -67,7 +71,7 @@ export default class Login extends Component {
                                         onChange={this.onChange}
                                     />
 
-                                    {/* 테스트할 때는 cmd, option, I를 눌러서 접속하고, 콘솔창으로 바꿔서 테스트 시작 */}ㅌ
+                                    {/* 테스트할 때는 cmd, option, I를 눌러서 접속하고, 콘솔창으로 바꿔서 테스트 시작 */}
                                 </div>
                                 <input type="submit" className="btn btn-info btn-block mt-4"/>
                             </form>
