@@ -12,6 +12,7 @@ const psatRoute = require('./Route/psat');
 const userRoute = require('./Route/user');
 const profileRoute = require('./Route/profile');
 const noticeRoute = require('./Route/notice');
+const bbsRoute = require('./Route/bbs');
 
 const app = express();
 require('./config/database');
@@ -30,6 +31,7 @@ app.use('/lecture/psat', psatRoute);
 app.use('/users', userRoute);
 app.use('/profile', profileRoute);
 app.use('/notice', noticeRoute);
+app.use('/bbs', bbsRoute);
 
 
 app.use(function (req, res, next) {

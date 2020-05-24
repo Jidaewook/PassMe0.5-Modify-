@@ -55,7 +55,11 @@ exports.user_login = (req, res) => {
                 });
             }
             user.comparePassword(password, (err, isMatch) => {
-                if (err) throw err;
+                if (err || isMatch === false) {
+                    return res.status(400).json({
+                        err: "Wrong password"
+                    });
+                }
                 const payload = { id: user._id, name: user.name, email: user.email, avatar: user.avatar };
 
                 res.status(200).json({

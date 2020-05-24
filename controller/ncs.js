@@ -177,21 +177,23 @@ exports.ncs_unlike = (req, res) => {
 // 아직 댓글 미완성
 exports.ncs_comments = (req, res) => {
     ncsModel    
-        .findById(req.params.id)
+        .findById(req.params.ncsModelId)
         .then(post => {
             const newComment = {
                 text: req.body.text,
-                name: req.body.name,
-                avatar: req.body.avatar,
+                name: req.user.name,
+                avatar: req.user.avatar,
                 user: req.user.id
             };
-
             post.comments.unshift(newComment);
+            console.log("post:", post);
 
             post.save()
                 .then(post => res.json(post));
         })
         .catch(err => 
-            res.json(err)
+            res.json({
+                err: err
+            })
         );
 };

@@ -30,7 +30,7 @@ const ncsSchema  = new mongoose.Schema(
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'users'
                 },
-                desc: {
+                text: {
                     type: String,
                     require: true
                 },
