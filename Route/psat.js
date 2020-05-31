@@ -24,6 +24,20 @@ router.get('/:psatModelId', psat_detailget);
 // delete
 router.delete('/:psatModelId', psat_del);
 
+// search -> controller화 할 것
+router.get('/search', (req, res) => {
+    const {keyword} = req.body;
+
+    psatModel
+        .findOne({title: keyword})
+        .then(result => {
+            console.log(result);
+        })
+        .catch()
+
+
+});
+
 // patch
 router.patch('/:psatModelId', psat_patch);
 
