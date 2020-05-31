@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import Footer from './components/layout/Footer';
@@ -9,24 +9,47 @@ import Dashboard from './components/Dashboard';
 import Store from './store';
 
 import './App.css';
+import jwt_decode from 'jwt-decode';
+import setAuthToken from './utils/setAuthToken';
+import {setCurrentUser, logoutUser} from './components/actions/authActions';
 
-
-function App() {
-  return (
-    <Provider store={Store}>
-      <Router>
-        <div className="App">
-          <Nav />
-          <Route exact path="/" component={Landing} />
-          <div class="container">
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/dashboard" component={Dashboard} />
-          </div>
-          <Footer />
-        </div>
-      </Router>
-    </Provider>
-  );
+// check from token
+if(localStorage.jwtToken){
+  // Set auth token header auth
+  setAuthToken(localStorage.jwtToken);
+  // Decode token and get user infro and exp
+  const decoded = jwt_decode(localStorage.jwtToken);
+  // Set user and isAuthenticated
+  Store.dispatch(setCurrentUser(decoded));
+  // check for expired token
+  const currentTime = Date.now()/1000;
+  if (decoded.exp < currentTime) {
+    // Logout user
+    Store.dispatch(logoutUser());
+    // redirect to login
+    window.location.href = '/login';
+  }
 }
 
-export default App;
+
+
+export default class App extends Component {
+  render(){
+    return (
+      <Provider store={Store}>
+        <Router>
+          <div className="App">
+            <Nav />
+            <Route exact path="/" component={Landing} />
+            <div className="container">
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/dashboard" component={Dashboard} />
+            </div>
+            <Footer />
+          </div>
+        </Router>
+      </Provider>
+    );
+  }
+}
+
