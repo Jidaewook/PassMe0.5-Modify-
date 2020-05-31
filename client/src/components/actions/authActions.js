@@ -27,11 +27,11 @@ export const loginUser = userData => dispatch => {
 
         })
         .catch(
-            // err => 
-            // dispatch({
-            //     type: GET_ERRORS,
-            //     payload: err.response.data
-            // })
+            err => 
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
+            })
         );
 };
 
@@ -52,4 +52,6 @@ export const logoutUser = () => dispatch => {
 
     // Set current user to {} which will set isAuthenticated to false
     dispatch(setCurrentUser({}));
+
+
 };
