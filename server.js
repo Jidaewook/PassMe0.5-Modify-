@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 dotenv.config();
 
+const path = require("path");
+
 const passport = require('passport');
 
 const ncsRoute = require('./Route/ncs');
@@ -49,7 +51,7 @@ app.use(async function (err, req, res, next) {
     next();
 });
 
-const PORT = process.env.PORT || 7000;
+const PORT = process.env.PORT || 6000;
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
