@@ -4,7 +4,7 @@ const multer = require('multer');
 
 const psatModel = require('../model/psat');
 
-const {psat_post, psat_get, psat_detailget, psat_del, psat_patch} = require('../controller/psat');
+const {psat_post, psat_get, psat_detailget, psat_del, psat_patch, psat_search} = require('../controller/psat');
 const upload = require('../config/multer');
 
 // create 
@@ -25,18 +25,7 @@ router.get('/:psatModelId', psat_detailget);
 router.delete('/:psatModelId', psat_del);
 
 // search -> controller화 할 것
-router.get('/search', (req, res) => {
-    const {keyword} = req.body;
-
-    psatModel
-        .findOne({title: keyword})
-        .then(result => {
-            console.log(result);
-        })
-        .catch()
-
-
-});
+router.get('/search', psat_search);
 
 // patch
 router.patch('/:psatModelId', psat_patch);

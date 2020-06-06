@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const {ncs_post, ncs_get, ncs_del, ncs_patch, ncs_detailget, ncs_like, ncs_unlike, ncs_comments} = require('../controller/ncs');
+const {ncs_post, ncs_get, ncs_del, ncs_patch, ncs_detailget, ncs_like, ncs_unlike, ncs_comments, ncs_search} = require('../controller/ncs');
 // upload files
 const upload = require('../config/multer');
 
@@ -37,5 +37,8 @@ router.post('/unlikes/:ncsModelId', authCheck, ncs_unlike);
 
 // comments
 router.post('/comments/:ncsModelId', authCheck, ncs_comments);
+
+// search
+router.get('/search', ncs_search);
 
 module.exports = router;

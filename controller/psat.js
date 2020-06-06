@@ -113,3 +113,15 @@ exports.psat_patch = (req, res) => {
 
 };
 
+exports.psat_search = (req, res) => {
+    const {keyword} = req.body;
+
+    psatModel
+        .findOne({title: keyword})
+        .then(result => {
+            console.log(result);
+        })
+        .catch()
+
+
+};

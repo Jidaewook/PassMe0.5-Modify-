@@ -197,3 +197,16 @@ exports.ncs_comments = (req, res) => {
             })
         );
 };
+
+exports.ncs_search = (req, res) => {
+    const {keyword} = req.body;
+
+    ncsModel
+        .findOne({title: keyword})
+        .then(result => {
+            console.log(result);
+        })
+        .catch()
+
+
+};

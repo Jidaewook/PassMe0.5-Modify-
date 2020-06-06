@@ -183,3 +183,16 @@ exports.bbs_comments = (req, res) => {
             res.json(err)
         );
 };
+
+exports.bbs_search = (req, res) => {
+    const {keyword} = req.body;
+
+    bbsModel
+        .findOne({title: keyword})
+        .then(result => {
+            console.log(result);
+        })
+        .catch()
+
+
+};

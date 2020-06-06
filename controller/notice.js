@@ -103,3 +103,16 @@ exports.notice_patch = (req, res) => {
         });
 
 };
+
+exports.notice_search = (req, res) => {
+    const {keyword} = req.body;
+
+    psatModel
+        .findOne({title: keyword})
+        .then(result => {
+            console.log(result);
+        })
+        .catch()
+
+
+}
