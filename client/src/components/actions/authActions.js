@@ -8,7 +8,7 @@ import setAuthToken from '../../utils/setAuthToken';
 
 export const loginUser = userData => dispatch => {
     axios   
-        .post("http://localhost:7000/users/login", userData)
+        .post("https://pure-retreat-35508.herokuapp.com/users/login", userData)
         .then(res => {
             // Save to localstorage
             const {token} = res.data;

@@ -34,5 +34,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:6000"
+  "proxy": "https://pure-retreat-35508.herokuapp.com/"
 }
