@@ -8,9 +8,9 @@ const { profile_post, profile_get, profile_del, profile_patch } = require('../co
 
 router.post('/', checkAuth, profile_post);
 
-router.get('/', checkAuth, profile_get);
+router.get('/', profile_get);
 
-router.delete('/:profileId', checkAuth, profile_del);
+router.delete('/:profileId', profile_del);
 
 router.patch('/', checkAuth, profile_patch);
 

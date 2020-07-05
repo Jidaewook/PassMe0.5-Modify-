@@ -3,35 +3,96 @@ import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {logoutUser} from '../actions/authActions';
+import styled from 'styled-components';
 
-class Navbar extends Component {
+import { 
 
+    Collapse,
+    Navbar,
+    NavbarToggler,
+    NavbarBrand,
+    Nav,
+    NavItem,
+    NavLink,
+    UncontrolledDropdown,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem,
+    NavbarText
+  } from 'reactstrap';
+
+
+
+const View = styled.div`
+  width: 100px;
+`;
+
+class Navibar extends Component {
+
+    state = {
+        isOpen: false,
+        setIsOpen: false
+    }
+    
     onLogoutClick(e) {
         e.preventDefault();
         this.props.logoutUser();
     }
 
     render() {
+        
+
+
+
         const {isAuthenticated, user} = this.props.auth;
 
         const authLink = (
             <ul className="navbar-nav ml-auto">
                 <li className="nav-item">
-                   <Link className="nav-link" to="/usermanage">
-                        회원관리
+                   <Link className="nav-link" to="/user">
+                        <View>회원관리</View>
                    </Link>
                 </li>
-                <li className="nav-item">
-                   <Link className="nav-link" to="/bbsmanage">
-                        게시판관리
-                   </Link>
-                </li>
+                <NavbarToggler onClick={this.toggle} />
+                    <Collapse isOpen={this.isOpen} navbar></Collapse>
+                <UncontrolledDropdown nav inNavbar>
+                            <DropdownToggle nav caret>
+                                <View>게시판</View>
+                            </DropdownToggle>
+                            <DropdownMenu right>
+                                <DropdownItem>
+                                    <Link to="/notice">
+                                        공지사항
+                                    </Link>
+                                </DropdownItem>
+                                <DropdownItem>
+                                    <Link to="/bbs">
+                                        자유게시판
+                                    </Link>
+                                
+                                </DropdownItem>
+                                <DropdownItem>
+                                    <Link to="/psat">
+                                        PSAT
+                                    </Link>
+                                </DropdownItem>
+                                <DropdownItem>
+                                    <Link to="/ncs">
+                                        NCS
+                                    </Link>
+                                </DropdownItem>
+                            </DropdownMenu>
+                            </UncontrolledDropdown>
+
+
+
                 <li className="nav-item">
                     <a
                         href=""
                         onClick={this.onLogoutClick.bind(this)}
                         className="nav-link"
                     >
+                        <View>
                         <img
                             className="rounded-circle"
                             src={user.avatar}
@@ -40,6 +101,7 @@ class Navbar extends Component {
                             title="You must have a Gravatar connected to your email to display an image"
                         />{' '}
                         Logout
+                        </View>
                     </a>
                 </li>
             </ul>
@@ -57,6 +119,9 @@ class Navbar extends Component {
         );
 
 
+        const {isOpen, setIsOpen} = this.state;
+
+
         return (
             <nav className="navbar navbar-expand-sm navbar-dark bg-dark mb-4">
                     <div className="container">
@@ -72,6 +137,7 @@ class Navbar extends Component {
                             <span className="nav-bar-toggler-icon" />
                         </button>
                     </div>
+                    
 
                     <div className="collapse navbar-collapse" id="mobile-nav">
                         {isAuthenticated ? authLink : guestLink}
@@ -81,7 +147,7 @@ class Navbar extends Component {
     }
 };
 
-Navbar.propTypes = {
+Navibar.propTypes = {
     logoutUser: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired
 };
@@ -90,4 +156,4 @@ const mapStateToProps = state => ({
     auth: state.auth
 });
 
-export default connect(mapStateToProps, {logoutUser})(Navbar);
+export default connect(mapStateToProps, {logoutUser})(Navibar);

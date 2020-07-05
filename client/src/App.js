@@ -2,11 +2,16 @@ import React, { Component } from 'react';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import Footer from './components/layout/Footer';
-import Nav from './components/layout/Navbar';
+import Nav from './components/layout/Navibar';
 import Landing from './components/layout/Landing';
 import Login from './auth/Login';
 import Dashboard from './components/Dashboard';
 import Store from './store';
+import bbs from './components/screen/bbs';
+import notice from './components/screen/notice';
+import psat from './components/screen/psat';
+import ncs from './components/screen/ncs';
+import user from './components/screen/user';
 
 import './App.css';
 import jwt_decode from 'jwt-decode';
@@ -49,6 +54,11 @@ export default class App extends Component {
             <div className="container">
               <Route exact path="/login" component={Login} />
               <Route exact path="/dashboard" component={Dashboard} />
+              <Route exact path="/ncs" component={ncs}/>
+              <Route exact path="/psat" component={psat}/>
+              <Route exact path="/bbs" component={bbs}/>
+              <Route exact path="/notice" component={notice}/>
+              <Route exact path="/user" component={user}/>
             </div>
             <Footer />
           </div>
