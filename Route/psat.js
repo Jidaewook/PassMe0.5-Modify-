@@ -7,6 +7,10 @@ const psatModel = require('../model/psat');
 const {psat_post, psat_get, psat_detailget, psat_del, psat_patch, psat_search} = require('../controller/psat');
 const upload = require('../config/multer');
 
+const passport = require('passport');
+const authCheck = passport.authenticate("jwt", {session: false});
+
+
 // create 
 // @route POST /lecture/psat
 // @desc Create psat
@@ -19,15 +23,15 @@ router.post('/', upload.upload.single('thumbnail'), psat_post);
 router.get('/', psat_get);
 
 // detailget
-router.get('/:psatModelId', psat_detailget);
+router.get('/:psatModelId', authCheck, psat_detailget);
 
 // delete
-router.delete('/:psatModelId', psat_del);
+router.delete('/:psatModelId', authCheck, psat_del);
 
 // search -> controller화 할 것
 router.get('/search', psat_search);
 
 // patch
-router.patch('/:psatModelId', psat_patch);
+router.patch('/:psatModelId',authCheck,  psat_patch);
 
 module.exports = router;

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const passport = require('passport');
+const checkAuth = passport.authenticate('jwt', {session: false});
 
 const mailgun = require('../config/mailgun');
 const template = require('../config/template');
@@ -14,7 +15,6 @@ const {
     user_current
 } = require('../controller/user');
 
-const checkAuth = passport.authenticate('jwt', {session: false});
 
 // register
 // @route POST users/register

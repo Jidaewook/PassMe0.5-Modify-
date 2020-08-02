@@ -21,13 +21,13 @@ router.post('/', upload.upload.single('thumbnail'), ncs_post);
 router.get('/', ncs_get);
 
 // detailget
-router.get('/:ncsModelId', ncs_detailget);
+router.get('/:ncsModelId', authCheck, ncs_detailget);
 
 // patch
-router.patch('/:ncsModelId', ncs_patch);
+router.patch('/:ncsModelId', authCheck, ncs_patch);
 
 // delete
-router.delete('/:ncsModelId', ncs_del);
+router.delete('/:ncsModelId', authCheck, ncs_del);
 
 // likes
 router.post('/likes/:ncsModelId', authCheck, ncs_like);
