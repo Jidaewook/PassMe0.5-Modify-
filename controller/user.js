@@ -157,41 +157,49 @@ exports.user_forgot = (req, res) => {
                 return res.status(400).json({
                     message: 'user not found, 이메일이 없음'
                 });
-            }
-            crypto.randomBytes(48, (err, buffer) => {
+            } else {
+                const token = jwt.sign(
+                    {_id: user._id},
+                    process.env.JWT_RESET_PASSWORD,
+                    {expiresIn: '10m'}
+                );
+                const emailData = {
+                    from: process.env.EMAIL_FROM,
+                    to: email,
+                    subject: `Password Reset link`,
+                    html: `
+                        <h1>Please use the following link to reset your password</h1>
+                        <p>${process.env.CLIENT_URL}/users/password/reset/${token}</p>
+                        <hr />
+                        <p>This email may contain sensetive information</p>
+                        <p>${process.env.CLIENT_URL}</p>
+                        `
+                };
 
-                const resetToken = buffer.toString('hex');
-                console.log(resetToken);
-
-                if (err) {
-                    return res.status(400).json({
-                        error: '리셋토큰 생성 중 에러'
-                    });
-                }
-                user.resetPasswordToken = resetToken;
-                user.resetPasswordExpires = Date.now() + 3600000;
-
-                user
-                    .save(err => {
-                        if (err) {
-                            return res.status(422).json({
-                                error: '저장이 안됨'
-                            });
+                return user
+                    .updateOne({resetPasswordLink: token}, (err, success) => {
+                        if(err) {
+                            return res.status(400).json({
+                                error: 'Database connection error'
+                            })
+                        } else {
+                            sgMail
+                                .send(emailData)
+                                .then(() => {
+                                    return res.status(200).json({
+                                        message: `Email has been setn to ${email}, Follow the instruction to activate your account`
+                                    })
+                                })
+                                .catch(err => {
+                                    res.status(404).json({
+                                        message: err.message
+                                    })
+                                })
                         }
-                        // const message = template.resetEmail(req, resetToken);
+                    })
+                    
+            }
 
-                        // mailgun.sendEmail(user.email, message);
-
-                        return res.status(200).json({
-                            success: true,
-                            message: '이메일로 패스워드를 리셋하기 위한 링크를 보냈다.',
-                            tokenInfo: user.resetPasswordToken
-
-                        })
-                    });
-
-
-            });
 
         })
 
