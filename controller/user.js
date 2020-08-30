@@ -4,7 +4,9 @@ const tokenGenerator = require('../config/tokengenerator');
 
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
-
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.MAIL_KEY);
+const jwt = require('jsonwebtoken');
 
 
 
@@ -20,28 +22,101 @@ exports.user_register =(req, res) => {
                     error: 'Email already exists'
                 });
             }
-            const newUser = new userModel({
-                name, email, password
-            });
+            // const newUser = new userModel({
+            //     name, email, password
+            // });
 
-            newUser
-                .save()
-                .then(user => {
-                    res.status(200).json({
-                        message: "Successful new User",
-                        userInfo: user
-                    });
+            // newUser
+            //     .save()
+            //     .then(user => {
+            //         res.status(200).json({
+            //             message: "Successful new User",
+            //             userInfo: user
+            //         });
 
-                    // const message = template.signupEmail(user.name);
-                    // mailgun.sendEmail(user.email, message);
+            //         // const message = template.signupEmail(user.name);
+            //         // mailgun.sendEmail(user.email, message);
+            //     })
+            //     .catch(err => {
+            //         res.status(400).json({
+            //             message: err.message
+            //         });
+            //     });
+
+            const payload = {name, email, password};
+            const token = jwt.sign(
+                payload, 
+                process.env.JWT_ACCOUNT_ACTIVATION,
+                {expiresIn: '20m'}
+            )
+
+            const emailData = {
+                from: process.env.EMAIL_FROM,
+                to: email,
+                subject: 'PASSME NCS Account Activation Link',
+                html: `
+                    <h1>Please use the following to activate your account</h1>
+                    <p>${process.env.CLIENT_URL}/users/activate/${token}</p>
+                    <hr />
+                    <p>This email may containe sensetive information</p>
+                    <p>${process.env.CLIENT_URL}</p>
+                `
+            };
+
+            sgMail
+                .send(emailData)
+                .then(() => {
+                    return res.status(200).json({
+                        message: `Email has been sent to ${email}`
+                    })
                 })
                 .catch(err => {
-                    res.status(400).json({
-                        message: err.message
-                    });
+                    return res.status(400).json({
+                        success: false,
+                        errors: err
+                    })
                 });
         });
     };
+
+exports.user_activation = (req, res) => {
+    const {token} = req.body;
+
+    if(token){
+        jwt.verify(token, process.env.JWT_ACCOUNT_ACTIVATION, (err, decoded) => {
+            if(err){ 
+                console.log('Activation Error');
+                return res.status(401).json({
+                    errors: 'Expired Link'
+                });
+            } else {
+                const {name, email, password} = jwt.decode(token);
+
+                const user = new userModel({
+                    name, email,
+                    password
+                });
+                
+                user    
+                    .save()
+                    .then(user => {
+                        res.status(200).json({
+                            success: true,
+                            userInfo: user
+                        })
+                    })
+                    .catch(err => {
+                        res.status(400).json({
+                            message: err
+                        })
+                    })
+
+            }
+
+
+        })
+    }
+};
 
 exports.user_login = (req, res) => {
     const { email, password } = req.body;

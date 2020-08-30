@@ -12,16 +12,26 @@ const {
     user_login, 
     user_forgot, 
     user_reset, 
-    user_current
+    user_current,
+    user_activation
 } = require('../controller/user');
 
 
 // register
 // @route POST users/register
-// @desc register user
+// @desc register user/sendEmail
 // @access public
 
 router.post('/register', user_register);
+
+// activationAccount
+// @route POST users/activation
+// @desc Activation Account
+// @access private
+
+router.post('/activation', user_activation);
+
+
 
 // login
 // @route POST users/login
