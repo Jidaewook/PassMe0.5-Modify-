@@ -102,7 +102,8 @@ exports.user_activation = (req, res) => {
                     .then(user => {
                         res.status(200).json({
                             success: true,
-                            userInfo: user
+                            userInfo: user,
+                            message: "회원가입이 되었습니다."
                         })
                     })
                     .catch(err => {
