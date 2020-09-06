@@ -190,6 +190,7 @@ exports.user_forgot = (req, res) => {
                                     return res.status(200).json({
                                         message: `Email has been setn to ${email}, Follow the instruction to activate your account`
                                     })
+                                    
                                 })
                                 .catch(err => {
                                     res.status(404).json({
