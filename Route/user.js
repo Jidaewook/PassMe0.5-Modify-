@@ -31,8 +31,6 @@ router.post('/register', user_register);
 
 router.post('/activation', user_activation);
 
-
-
 // login
 // @route POST users/login
 // @desc login user / Returning JWT Token
