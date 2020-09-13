@@ -40,11 +40,13 @@ router.post('/login', user_login);
 
 router.post('/forgot', user_forgot);
 
-router.post('/reset/:token', user_reset);
-
 // @route PUT users/reset
 // @desc Profile RESET
 // @account Private
+
+router.put('/resetpw', user_reset);
+
+
 
 // router.post('/account-activation', (req, res) => {
     // const {token} = req.body;

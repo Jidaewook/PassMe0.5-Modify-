@@ -7,6 +7,7 @@ const bcrypt = require('bcryptjs');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.MAIL_KEY);
 const jwt = require('jsonwebtoken');
+const _ = require('lodash');
 
 
 
@@ -122,6 +123,7 @@ exports.user_activation = (req, res) => {
 exports.user_login = (req, res) => {
     const { email, password } = req.body;
 
+    console.log(req.body);
     userModel
         .findOne({ email })
         .then(user => {
@@ -210,61 +212,103 @@ exports.user_forgot = (req, res) => {
 };
 
 exports.user_reset = (req, res) => {
-    const { password } = req.body;
+    const { newPassword, resetPasswordLink } = req.body;
 
-    if (!password) {
-        return res.status(422).json({
-            error: '비밀번호를 입력하세요.'
-        })
-    }
-    userModel
-        .findOne(
-            {
-                resetPasswordToken: req.params.token,
-                resetPasswordExpires: { $gt: Date.now() }
-            },
-        )
-        .then(user => {
-            console.log(user);
-            if (!user) {
-                return res.status(422).json({
-                    error: '사용자 토큰이 만료되었습니다. 다시 로그인하세요.'
+    if(resetPasswordLink) {
+        jwt.verify(resetPasswordLink, process.env.JWT_RESET_PASSWORD, (err, decoded) => {
+            if(err) {
+                return res.status(400).json({
+                    error: 'Expired Link. Try again'
                 });
             }
-            bcrypt.genSalt(10, (err, salt) => {
-                bcrypt.hash(password, salt, (err, hash) => {
-                    if (err) {
-                        return res.status(422).json({
-                            error: err.message
+            userModel
+                .findOne({resetPasswordLink}, (err, user) => {
+                    if(err || !user) {
+                        return res.status(401).json({
+                            error: 'Something went wrogn. try later'
                         });
                     }
-                    password = hash;
+                    // userModel 내의 변수들을 설정 중하는 과정에 진입
+                    const updatedFields = {
+                        password: newPassword,
+                        resetPasswordLink: ''
+                    };
 
-                    user.password = password;
-                    user.resetPasswordToken = undefined;
-                    user.resetPasswordExpires = undefined;
-
+                    user = _.extend(user, updatedFields);
                     user
-                        .save(err => {
-                            if (err) {
-                                return res.status(422).json({
-                                    error: '리셋한 패스워드를 저장하는 과정에서 에러가 발생했습니다.'
+                        .save((err, result) => {
+                            if(err){
+                                return res.status(404).json({
+                                    error: 'Error resetting user password'
                                 });
+                            
                             }
-
-                            // const message = template.confirmResetPasswordEmail();
-                            // mailgun.sendEmail(user.email, message);
-
-                            return res.status(200).json({
-                                success: true,
-                                message: '패스워드가 리셋되었고, 이메일을 보내주었다.'
+                            res.status(200).json({
+                                message: 'Graet! Now you can login with your new password'
                             })
-                        })
+                        });
 
-                })
-            });
-        })
-        .catch();
+                });
+        }) 
+    }
+
+
+
+    // if (!newPassword) {
+    //     return res.status(404).json({
+    //         error: '비밀번호를 입력하세요.'
+    //     })
+    // }
+
+
+    // userModel
+    //     .findOne(
+    //         {
+    //             resetPasswordLink: req.params.token,
+    //             resetPasswordExpires: { $gt: Date.now() }
+    //         },
+    //     )
+    //     .then(user => {
+    //         console.log(user);
+    //         if (!user) {
+    //             return res.status(422).json({
+    //                 error: '사용자 토큰이 만료되었습니다. 다시 로그인하세요.'
+    //             });
+    //         }
+    //         bcrypt.genSalt(10, (err, salt) => {
+    //             bcrypt.hash(password, salt, (err, hash) => {
+    //                 if (err) {
+    //                     return res.status(422).json({
+    //                         error: err.message
+    //                     });
+    //                 }
+    //                 password = hash;
+
+    //                 user.password = password;
+    //                 user.resetPasswordToken = undefined;
+    //                 user.resetPasswordExpires = undefined;
+
+    //                 user
+    //                     .save(err => {
+    //                         if (err) {
+    //                             return res.status(400).json({
+    //                                 error: '리셋한 패스워드를 저장하는 과정에서 에러가 발생했습니다.'
+    //                             });
+    //                         }
+
+    //                         // const message = template.confirmResetPasswordEmail();
+    //                         // mailgun.sendEmail(user.email, message);
+
+    //                         return res.status(200).json({
+    //                             success: true,
+    //                             message: '패스워드가 리셋되었고, 이메일을 보내주었다.'
+    //                         })
+    //                     })
+
+    //             })
+    //         });
+    //     })
+    //     .catch();
 };
 
 exports.user_current = (req, res) => {
