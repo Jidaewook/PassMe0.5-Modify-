@@ -33,7 +33,7 @@
     "express": "^4.17.1",
     "express-jwt": "^5.3.1",
     "gravatar": "^1.8.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "jwt-decode": "^2.2.0",
     "jwt-decoder": "0.0.0",
     "lodash": "^4.17.20",
